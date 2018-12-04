@@ -6,8 +6,8 @@ import warnings
 warnings.filterwarnings("ignore")
 
 
-train = pd.read_csv('.inputs/train_V2.csv')
-test = pd.read_csv('.inputs/test_V2.csv')
+train = pd.read_csv('inputs/train_V2.csv')
+test = pd.read_csv('inputs/test_V2.csv')
 
 
 # solos = train[train['numGroups']>50]
@@ -33,4 +33,14 @@ train['healsAndBoostsPerWalkDistance'].fillna(0, inplace=True)
 train['killsPerWalkDistance'] = train['kills']/(train['walkDistance']+1) #The +1 is to avoid infinity, because there are entries where kills>0 and walkDistance=0. Strange.
 train['killsPerWalkDistance'].fillna(0, inplace=True)
 train['team'] = [1 if i>50 else 2 if (i>25 & i<=50) else 4 for i in train['numGroups']]
-print(train[['kills', 'walkDistance', 'rideDistance', 'killsPerWalkDistance', 'winPlacePerc']].sort_values(by='winPlacePerc').tail(100))
+
+
+# 'weaponsAcquired', 'damageDealt', 'killPlace', 'totalDistance', 'boostsPerWalkDistance'	'healsPerWalkDistance'	'healsAndBoostsPerWalkDistance'	'killsPerWalkDistance'
+# print(train.drop('matchType',1,inplace=True))
+
+from sklearn.neighbors import KNeighborsRegressor
+neigh = KNeighborsRegressor(n_neighbors=3)
+neigh.fit(train[['weaponsAcquired', 'damageDealt', 'killPlace', 'totalDistance', 'boostsPerWalkDistance',	'healsPerWalkDistance',	'healsAndBoostsPerWalkDistance',	'killsPerWalkDistance']][:200], train['winPlacePerc'][:200])
+
+dist, indices = neigh.kneighbors(train[['weaponsAcquired', 'damageDealt', 'killPlace', 'totalDistance', 'boostsPerWalkDistance',	'healsPerWalkDistance',	'healsAndBoostsPerWalkDistance',	'killsPerWalkDistance']][300:500])
+print(dist,indices)

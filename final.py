@@ -39,8 +39,10 @@ train['team'] = [1 if i>50 else 2 if (i>25 & i<=50) else 4 for i in train['numGr
 # print(train.drop('matchType',1,inplace=True))
 
 from sklearn.neighbors import KNeighborsRegressor
-neigh = KNeighborsRegressor(n_neighbors=3)
+neigh = KNeighborsRegressor(n_neighbors=11)
 neigh.fit(train[['weaponsAcquired', 'damageDealt', 'killPlace', 'totalDistance', 'boostsPerWalkDistance',	'healsPerWalkDistance',	'healsAndBoostsPerWalkDistance',	'killsPerWalkDistance']][:200], train['winPlacePerc'][:200])
 
-dist, indices = neigh.kneighbors(train[['weaponsAcquired', 'damageDealt', 'killPlace', 'totalDistance', 'boostsPerWalkDistance',	'healsPerWalkDistance',	'healsAndBoostsPerWalkDistance',	'killsPerWalkDistance']][300:500])
-print(dist,indices)
+# dist, indices = neigh.kneighbors(train[['weaponsAcquired', 'damageDealt', 'killPlace', 'totalDistance', 'boostsPerWalkDistance',	'healsPerWalkDistance',	'healsAndBoostsPerWalkDistance',	'killsPerWalkDistance']][300:301])
+# print(dist,indices)
+predcited = neigh.predict(train[['weaponsAcquired', 'damageDealt', 'killPlace', 'totalDistance', 'boostsPerWalkDistance',	'healsPerWalkDistance',	'healsAndBoostsPerWalkDistance',	'killsPerWalkDistance']][3000:3001])
+print(predcited,train['winPlacePerc'][3000:3001])

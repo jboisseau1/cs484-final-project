@@ -34,15 +34,11 @@ test = addFeatures(pd.read_csv('inputs/test_V2.csv'))
 
 from sklearn.neighbors import KNeighborsRegressor
 neigh = KNeighborsRegressor(n_neighbors=3)
+#
 neigh.fit(train[['weaponsAcquired', 'damageDealt', 'killPlace', 'totalDistance','healsAndBoosts',	'killsPerWalkDistance']][:700000], train['winPlacePerc'][:700000])
-
-# dist, indices = neigh.kneighbors(train[['weaponsAcquired', 'damageDealt', 'killPlace', 'totalDistance', 'boostsPerWalkDistance',	'healsPerWalkDistance',	'healsAndBoostsPerWalkDistance',	'killsPerWalkDistance']][300:301])
-# print(dist,indices)
-predcited = neigh.predict(train[['weaponsAcquired', 'damageDealt', 'killPlace', 'totalDistance', 	'healsAndBoosts',	'killsPerWalkDistance']][800000:890000])
+predcited = neigh.predict(train[['weaponsAcquired', 'damageDealt', 'killPlace', 'totalDistance','healsAndBoosts',	'killsPerWalkDistance']][800000:890000])
 
 
 from sklearn.metrics import explained_variance_score
-
 EVS= explained_variance_score(train['winPlacePerc'][800000:890000], predcited)
-
 print(EVS)

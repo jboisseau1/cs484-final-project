@@ -9,7 +9,6 @@ def addFeatures(df):
     df['playersJoined'] = df.groupby('matchId')['matchId'].transform('count')
     df['killsNorm'] = df['kills']*((100-df['playersJoined'])/100 + 1)
     df['damageDealtNorm'] = df['damageDealt']*((100-df['playersJoined'])/100 + 1)
-    df[['playersJoined', 'kills', 'killsNorm', 'damageDealt', 'damageDealtNorm']][5:8]
     df['healsAndBoosts'] = df['heals']+df['boosts']
     df['totalDistance'] = df['walkDistance']+df['rideDistance']+df['swimDistance']
 
@@ -33,16 +32,17 @@ train = addFeatures(pd.read_csv('inputs/train_V2.csv'))
 test = addFeatures(pd.read_csv('inputs/test_V2.csv'))
 
 
-# solos = train[train['numGroups']>50]
-# duos = train[(train['numGroups']>25) & (train['numGroups']<=50)]
-# squads = train[train['numGroups']<=25]
-
-
 from sklearn.neighbors import KNeighborsRegressor
 neigh = KNeighborsRegressor(n_neighbors=3)
-neigh.fit(train[['weaponsAcquired', 'damageDealt', 'killPlace', 'totalDistance', 'boostsPerWalkDistance',	'healsPerWalkDistance',	'healsAndBoostsPerWalkDistance',	'killsPerWalkDistance']][:20000], train['winPlacePerc'][:20000])
+neigh.fit(train[['weaponsAcquired', 'damageDealt', 'killPlace', 'totalDistance','healsAndBoosts',	'killsPerWalkDistance']][:700000], train['winPlacePerc'][:700000])
 
 # dist, indices = neigh.kneighbors(train[['weaponsAcquired', 'damageDealt', 'killPlace', 'totalDistance', 'boostsPerWalkDistance',	'healsPerWalkDistance',	'healsAndBoostsPerWalkDistance',	'killsPerWalkDistance']][300:301])
 # print(dist,indices)
-predcited = neigh.predict(train[['weaponsAcquired', 'damageDealt', 'killPlace', 'totalDistance', 'boostsPerWalkDistance',	'healsPerWalkDistance',	'healsAndBoostsPerWalkDistance',	'killsPerWalkDistance']][30000:30001])
-print('Acc:',(predcited/train['winPlacePerc'][30000:30001].values[0]))
+predcited = neigh.predict(train[['weaponsAcquired', 'damageDealt', 'killPlace', 'totalDistance', 	'healsAndBoosts',	'killsPerWalkDistance']][800000:890000])
+
+
+from sklearn.metrics import explained_variance_score
+
+EVS= explained_variance_score(train['winPlacePerc'][800000:890000], predcited)
+
+print(EVS)

@@ -13,17 +13,17 @@ def addFeatures(df):
     df['totalDistance'] = df['walkDistance']+df['rideDistance']+df['swimDistance']
 
 
-    df['boostsPerWalkDistance'] = df['boosts']/(df['walkDistance']+1) #The +1 is to avoid infinity, because there are entries where boosts>0 and walkDistance=0. Strange.
+    df['boostsPerWalkDistance'] = df['boosts']/(df['walkDistance']+1)
     df['boostsPerWalkDistance'].fillna(0, inplace=True)
-    df['healsPerWalkDistance'] = df['heals']/(df['walkDistance']+1) #The +1 is to avoid infinity, because there are entries where heals>0 and walkDistance=0. Strange.
+    df['healsPerWalkDistance'] = df['heals']/(df['walkDistance']+1)
     df['healsPerWalkDistance'].fillna(0, inplace=True)
-    df['healsAndBoostsPerWalkDistance'] = df['healsAndBoosts']/(df['walkDistance']+1) #The +1 is to avoid infinity.
+    df['healsAndBoostsPerWalkDistance'] = df['healsAndBoosts']/(df['walkDistance']+1)
     df['healsAndBoostsPerWalkDistance'].fillna(0, inplace=True)
 
 
-    df['killsPerWalkDistance'] = df['kills']/(df['walkDistance']+1) #The +1 is to avoid infinity, because there are entries where kills>0 and walkDistance=0. Strange.
+    df['killsPerWalkDistance'] = df['kills']/(df['walkDistance']+1)
     df['killsPerWalkDistance'].fillna(0, inplace=True)
-    df['team'] = [1 if i>50 else 2 if (i>25 & i<=50) else 4 for i in df['numGroups']]
+
 
     return df
 
@@ -34,9 +34,9 @@ test = addFeatures(pd.read_csv('inputs/test_V2.csv'))
 
 from sklearn.neighbors import KNeighborsRegressor
 neigh = KNeighborsRegressor(n_neighbors=3)
-#
-neigh.fit(train[['weaponsAcquired', 'damageDealt', 'killPlace', 'totalDistance','healsAndBoosts',	'killsPerWalkDistance']][:700000], train['winPlacePerc'][:700000])
-predcited = neigh.predict(train[['weaponsAcquired', 'damageDealt', 'killPlace', 'totalDistance','healsAndBoosts',	'killsPerWalkDistance']][800000:890000])
+
+neigh.fit(train[['weaponsAcquired', 'killPlace', 'totalDistance',	'killsPerWalkDistance','healsAndBoostsPerWalkDistance']][:700000], train['winPlacePerc'][:700000])
+predcited = neigh.predict(train[['weaponsAcquired', 'killPlace', 'totalDistance',	'killsPerWalkDistance','healsAndBoostsPerWalkDistance']][800000:890000])
 
 
 from sklearn.metrics import explained_variance_score
